@@ -100,7 +100,9 @@ STOPSIGNAL SIGQUIT
 
 COPY docker/php/conf.d/local.ini /usr/local/etc/php/conf.d/local.ini
 
-WORKDIR /var/www/html
+COPY . /var/www/html/app
+
+WORKDIR /var/www/html/app
 COPY --chown=www-data:www-data . .
 
 EXPOSE 9000

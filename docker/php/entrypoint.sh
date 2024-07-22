@@ -2,7 +2,7 @@
 
 set -- php-fpm "$@"
 
-cd /var/www/html
+cd /var/www/html/app
 php artisan migrate --force
 php artisan db:seed --force
 
