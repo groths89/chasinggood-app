@@ -35,5 +35,5 @@ RUN composer install
 # Expose 8000 to external containers
 EXPOSE 8000
 
-# Set the default command to run php-fpm
-CMD ["php-fpm"]
+# Set the default command to run php artisan serve
+CMD ["php artisan serve --host=0.0.0.0 --port=8000"]
