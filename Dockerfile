@@ -107,6 +107,8 @@ COPY --chown=www-data:www-data . .
 
 EXPOSE 9000
 
+RUN composer install
+
 COPY docker/php/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
