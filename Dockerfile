@@ -9,30 +9,32 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 
 WORKDIR /app
 
-# Install dependencies
-COPY composer.json composer.lock ./
-RUN composer install --prefer-dist
-
-# Copy Laravel application code
+# Copy Laravel application code (Including the composer.json file)
 COPY . .
 
-# Build Laravel application (optional)
-RUN php artisan compile  # Adjust commands as needed
+# Install Node.js and npm (for Vite)
+RUN apk add --no-cache nodejs npm
+
+# Install project dependencies
+RUN npm install
+
+# Run the install step for Composer
+RUN composer install --no-dev --ignore-platform-reqs
+
+# Build assets with Vite
+RUN npm run build
 
 # Stage 2: Run Laravel application (slim image)
 FROM nginx:stable-alpine
 
 # Copy application code from builder stage
-COPY --from=builder /app /var/www/html
+COPY --from=builder /app/public .
 
 # Expose ports (adjust based on your Laravel application)
-EXPOSE 8000
+EXPOSE 80
 
-# Install PHP extensions (optional)
-RUN apk add php83-extensions-bcmath php83-extensions-mbstring php83-extensions-openssl php83-extensions-pdo_mysql
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Configure PHP-FPM (adjust as needed)
-COPY php-fpm.conf /etc/php/7/fpm/php-fpm.conf
-
-# Run PHP-FPM in the foreground
-CMD ["php-fpm7", "-F"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
