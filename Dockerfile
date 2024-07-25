@@ -1,8 +1,11 @@
 # Stage 1: Build environment (non-persistent)
 FROM php:8.3-alpine AS builder
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# INSTALL COMPOSER
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');" && \
+    mv composer.phar /usr/local/bin/composer
 
 WORKDIR /app
 
