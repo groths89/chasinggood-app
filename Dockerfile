@@ -1,110 +1,66 @@
-# Stage 1: Build environment (non-persistent)
-#FROM php:8.3-fpm-alpine AS builder-php
+FROM ubuntu:22.04
 
-# INSTALL PHP83
-# RUN apk update
-# RUN apk add openrc php83 php83-fpm
+LABEL maintainer="Taylor Otwell"
 
-# INSTALL COMPOSER
-# RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-#    php composer-setup.php && \
-#    php -r "unlink('composer-setup.php');" && \
-#    mv composer.phar /usr/local/bin/composer
+ARG WWWGROUP
+ARG NODE_VERSION=20
+ARG MYSQL_CLIENT="mysql-client"
+ARG POSTGRES_VERSION=15
 
-# WORKDIR /app
+WORKDIR /var/www/html
 
-# Copy Laravel application code (Including the composer.json file)
-# COPY . .
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=UTC
+ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan serve --host=0.0.0.0 --port=80"
+ENV SUPERVISOR_PHP_USER="sail"
 
-# Install Node.js and npm (for Vite)
-# RUN apk add --no-cache nodejs npm
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Install project dependencies
-# RUN npm install
+RUN apt-get update \
+    && mkdir -p /etc/apt/keyrings \
+    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 dnsutils librsvg2-bin fswatch ffmpeg nano  \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && apt-get update \
+    && apt-get install -y php8.3-cli php8.3-dev \
+       php8.3-pgsql php8.3-sqlite3 php8.3-gd \
+       php8.3-curl \
+       php8.3-imap php8.3-mysql php8.3-mbstring \
+       php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
+       php8.3-intl php8.3-readline \
+       php8.3-ldap \
+       php8.3-msgpack php8.3-igbinary php8.3-redis php8.3-swoole \
+       php8.3-memcached php8.3-pcov php8.3-imagick php8.3-xdebug \
+    && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && npm install -g npm \
+    && npm install -g pnpm \
+    && npm install -g bun \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/keyrings/pgdg.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && apt-get install -y yarn \
+    && apt-get install -y $MYSQL_CLIENT \
+    && apt-get install -y postgresql-client-$POSTGRES_VERSION \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Run the install step for Composer
-# RUN composer install --no-dev
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
-# PHP-specific build steps (e.g., artisan commands)
-# RUN php artisan migrate
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
-# Build assets with Vite
-# RUN npm run build
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
+RUN chmod +x /usr/local/bin/start-container
 
-# Add a volume for php-fpm
-# VOLUME /etc/php83/
-# VOLUME /usr/sbin/php-fpm
+EXPOSE 80/tcp
 
-# Stage 2: Run Laravel application (slim image)
-# FROM nginx:stable-alpine AS nginx
-
-# INSTALL SUPERVISOR
-# RUN apk update
-# RUN apk add --no-cache supervisor
-# RUN mkdir -p /var/log/supervisor
-
-# Copy application code from builder-python stage
-# COPY --from=builder-php /app/public /var/www/html/public
-
-# Expose ports (adjust based on your Laravel application)
-# EXPOSE 80
-
-# Copy configuration files
-# COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-# COPY php-fpm.conf /etc/php83/fpm/php-fpm.conf
-
-# Start Supervisor
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# APACHE Dockerfile
-FROM php:8.2.2-apache-buster
-
-RUN apt-get update && \
-    apt-get install nano zip unzip wget git locales locales-all libcurl4-openssl-dev libjpeg-dev libpng-dev libzip-dev pkg-config libssl-dev -y && \
-    docker-php-ext-install pdo_pgsql bcmath
-
-RUN docker-php-ext-configure gd \
-    && docker-php-ext-install gd \
-    && docker-php-ext-enable gd
-
-RUN docker-php-ext-configure zip \
-    && docker-php-ext-install zip
-
-# set document root to public
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-# enable rewrite module for htaccess
-RUN a2enmod rewrite
-
-# COPY THE SOURCE CODE TO DOCUMENT WEB ROOT
-WORKDIR /var/www/html/
-COPY . .
-
-
-# INSTALL COMPOSER
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php composer-setup.php && \
-    php -r "unlink('composer-setup.php');" && \
-    mv composer.phar /usr/local/bin/composer
-
-# UPDATE DEPENDENCIES
-RUN composer install
-
-RUN /usr/local/bin/composer require phpoffice/phpspreadsheet
-RUN /usr/local/bin/composer require aws/aws-sdk-php
-
-
-# ALLOW WEB SERVER (www-data) TO WRITE TO THESE LOG DIRECTORY
-RUN chown -R www-data:www-data /var/www/html/storage
-RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
-
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-
-RUN a2enmod rewrite
-
-COPY ./.docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+ENTRYPOINT ["start-container"]
