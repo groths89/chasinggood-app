@@ -13,6 +13,20 @@ return new class extends Migration
     {
         Schema::create('nominations', function (Blueprint $table) {
             $table->id();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('email');
+            $table->string('phone_number');
+            $table->string('nominating_option');
+            $table->string('nominee_organization_name')->nullable();
+            $table->string('nominee_first_name')->nullable();
+            $table->string('nominee_last_name')->nullable();
+            $table->string('nominee_email')->nullable();
+            $table->string('category');
+            $table->string('county');
+            $table->text('story');
+            $table->string('uploaded_video')->nullable();
+            $table->boolean('disclaimer_agreed');
             $table->timestamps();
         });
     }

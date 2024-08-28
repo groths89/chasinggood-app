@@ -1,13 +1,13 @@
 <div class="p-4 border rounded">
     <h2 class="text-lg font-bold">Basic Details</h2>
-    <div class="flex flex-row">
-        <x-input label="First Name" type="text" id="firstName" wire:model="basicDetails.firstName" class="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500" />
-        <x-input label="Last Name" type="text" id="lastName" wire:model="basicDetails.lastName" class="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500" />
+    <div class="flex flex-row mb-3">
+        <input placeholder="First Name" type="text" id="firstName" class="px-4 py-4 mt-1 mx-1 block w-full rounded-md border-b border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+        <input placeholder="Last Name" type="text" id="lastName" class="px-4 py-4 mt-1 mx-1 block w-full rounded-md border-b border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
     </div>
-    <div>
-        <x-input label="Email Address" type="email" id="emailAddress" wire:model="basicDetails.emailAddress" class="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500" />
+    <div class="flex flex-row mb-3">
+        <input placeholder="Email Address" type="email" id="emailAddress" class="px-4 py-4 mt-1 block w-full rounded-md border-b border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
     </div>
-    <div>
-        <x-input label="Phone Number" type="phone" id="phoneNumber" wire:model="basicDetails.phoneNumber" class="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-500" />
+    <div class="flex flex-row mb-3">
+        <input placeholder="Phone Number" type="phone" id="phoneNumber" class="px-4 py-4 mt-1 block w-full rounded-md border-b border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
     </div>
 </div>

@@ -6,27 +6,22 @@ use Livewire\Component;
 
 class NominationsForm extends Component
 {
-    public $basicDetails = [];
-    public $nominationDetails = [];
-    public $storyDetails = [];
-    public $referencesDetails = [];
-    public $agreeToTerms = false;
-    public $shouldShowDisclosure = false;
-    public $reviewData;
 
-    public function showDisclosure()
+    public $step = 1;
+    public $nomination_category = "";
+
+
+    public function nextStep()
     {
-        $this->shouldShowDisclosure = true;
+        $this->step++;
     }
 
-    public function submit()
+    public function previousStep()
     {
-        $this->validate([]);
-
-        $this->reviewData = [
-            'basicDetails' => $this->basicDetails,
-        ];
+        $this->step--;
     }
+
+    public function mount() {}
 
     public function render()
     {
