@@ -1,5 +1,5 @@
 <div x-data="{ completedFields: 0, totalFields: 5 }">
-<form class="space-y-8">
+<form class="space-y-8" wire:submit.prevent="submit">
     <div>
         <div class="h-2 mb-2 bg-gray-200 rounded-full progress">
             <div class="h-full bg-blue-500 rounded-full progress-bar" :style="{ width: completedFields / totalFields * 100 + '%' }"></div>          
@@ -9,14 +9,18 @@
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Basic Details</h2>
                     <div class="flex flex-row mb-3">
-                        <x-input placeholder="First Name" type="text" id="firstName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                        <x-input placeholder="Last Name" type="text" id="lastName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        @error('first_name') @enderror
+                        <x-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        @error('last_name') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-input placeholder="Email Address" type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-input wire:model="email_address" placeholder="Email Address" type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        @error('email_address') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-input placeholder="Phone Number" type="phone" id="phoneNumber" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-phone wire:model="phone_number" placeholder="Phone Number" type="phone" id="phoneNumber" :mask="['(###) ###-####', '+# ### ###-####']" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        @error('phone_number') @enderror
                     </div>
                 </div>
             </div>
@@ -26,28 +30,22 @@
                     <div>
                         <x-card title="Who are you nominating?">
                             <div class="space-y-2" x-data="{ nominationCategory: '' }">
-                                <x-radio id="self" label="Nominate self" name="nominationRadio" x-model="nominationCategory" value="self" />
-                                <x-radio id="organization" label="Nominate an organization" name="nominationRadio" x-model="nominationCategory" value="organization" />
-                                <x-radio id="adult_individual" label="Nominate an adult individual (18+)" name="nominationRadio" x-model="nominationCategory" value="adult_individual" />
-                                <x-radio id="teen_individual" label="Nominate a teen individual (ages 13-17)" name="nominationRadio" x-model="nominationCategory" value="teen_individual" />
-                                <div x-show="nominationCategory === 'organization' || nominationCategory === 'adult_individual' || nominationCategory === 'teen_individual'">
-                                    <x-input placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                    <x-input placeholder="Nominee Email Address" type="text" id="nomineeEmail" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />                               
-                                </div>                       
+                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="self" label="Self: Are you nominating yourself?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Self" />
+                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="organization" label="Organization: Are you nominating an organization?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Organization" />
+                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="adult_individual" label="Adult Individual (18+): Are you nominating an indivudual that is 18 or older?" name="nominationRadio" x-model="nominationCategory"wire:click="populateFields" value="Adult Individual (18+)" />
+                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="teen_individual" label="Teen Individual (ages 13-17): Are you nominating an individual that is a teenager from ages 13 to 17?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Teen Individual (Ages 13-17)" />
+                                @error('nominating_category') @enderror
+                                <div x-show="nominationCategory === 'Organization' || nominationCategory === 'Adult Individual (18+)' || nominationCategory === 'Teen Individual (Ages 13-17)'">
+                                    <x-input wire:model="nominee_name" placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <x-input wire:model="nominee_email" placeholder="Nominee Email Address" type="text" id="nomineeEmail" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />                               
+                                </div>
+                                @error('nominee_name') @enderror
+                                @error('nominee_email') @enderror                                                       
                             </div>
                         </x-card>
 
                         <x-select
-                        class="w-full px-4 py-4 text-gray-300 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        label="Select Category"
-                        placeholder="Select one category"
-                        :options="[
-                            ['name' => 'Self', 'id' => 1, 'description' => 'Are you nominating yourself?'],
-                            ['name' => 'Organization', 'id' => 2, 'description' => 'Are you nominating an organization?'],
-                            ['name' => 'Adult Individual (18+)', 'id' => 3, 'description' => 'Are you nominating an indivudual that is 18 or older?'],
-                            ['name' => 'Teen Individual (ages 13-17)', 'id' => 4, 'description' => 'Are you nominating an individual that is a teenager from ages 13 to 17?'],
-                        ]" option-label="name" option-value="id" />
-                        <x-select
+                        wire:model="nj_county"
                         class="w-full px-4 py-4 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         label="Search for a NJ County"
                         placeholder="Select NJ County"
@@ -99,7 +97,8 @@
                     <div class="m-4">
                         <div class="container p-4 mx-auto">
                             <div class="editor-container">
-                              <textarea id="editor" class="w-full h-64 p-2 border rounded"></textarea>
+                                <textarea wire:model="story_essay" id="editor" class="w-full h-64 p-2 border rounded"></textarea>
+                                @error('story_essay') @enderror
                             </div>
 {{--                             <div class="flex justify-center mt-4 space-x-2 toolbar">
                               <button id="bold-button" class="px-2 py-1 text-white bg-blue-500 rounded">Bold</button>
@@ -109,7 +108,7 @@
                               <button id="color-picker-button" class="px-2 py-1 text-white bg-pink-500 rounded">Color</button>
                               <input type="color" id="color-picker" class="hidden">
                             </div> --}}
-                        <p class="text-xs">(please limit to 500 words or less)</p>  
+                        <p class="text-xs">(please limit to 500 words or less)</p>
                         </div>
                     </div>
                     <div class="items-center m-4">
@@ -161,7 +160,8 @@
                                 </p>
                                 <div class="btn_container">
                                     <div class="flex items-center mb-4">
-                                        <input type="checkbox" value="theChkAcceptTerms" id="disclaimer" [checked]="theChkAcceptTerms" /><span class="ml-2 text-gray-600">I Agree to the License and Consent Disclaimer of ChasingGood</span>                              
+                                        <input wire:model="consent_agreement" type="checkbox" value="theChkAcceptTerms" id="disclaimer" [checked]="theChkAcceptTerms" /><span class="ml-2 text-gray-600">I Agree to the License and Consent Disclaimer of ChasingGood</span>                              
+                                        @error('consent_agreement') @enderror
                                     </div>
                                 </div>
                             </div>
@@ -169,6 +169,17 @@
                     </details>
                 </div>
             </div>
+            <div wire:ignore>
+            </div>
+            @if($errors->any())
+            <div class="p-4 bg-red-300 border border-red-600 rounded-md error-messages">
+                <ul>
+                @foreach ($errors->all() as $error)
+                    <li class="mb-2 font-semibold text-red-600">{{ $error }}</li>                 
+                @endforeach
+                </ul>
+            </div>
+            @endif
             <div class="flex flex-row justify-between my-3"> 
                 <button class="float-right px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="button" wire:click="submit">Submit</button>    
             </div>

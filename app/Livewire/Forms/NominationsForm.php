@@ -6,9 +6,38 @@ use Livewire\Component;
 
 class NominationsForm extends Component
 {
+    public $first_name;
+    public $last_name;
+    public $email_address;
+    public $phone_number;
+    public $nominating_category;
+    public $nominee_name;
+    public $nominee_email;
+    public $nj_county;
+    public $story_essay;
+    public $consent_agreement;
 
     public $step = 1;
     public $nomination_category = "";
+
+    protected $rules = [
+        'first_name' => 'required|max:255',
+        'last_name' => 'required|max:255',
+        'email_address' => 'required|email',
+        'phone_number' => 'required|regex:^\d{10,11}$^',
+        'nominating_category' => 'required',
+        'nominee_name' => 'required',
+        'nominee_email' => 'required|email',
+        'nj_county' => 'required',
+        'story_essay' => 'required|max:500',
+        'consent_agreement' => 'required'
+    ];
+
+    protected $messages = [
+        'phone_number.regex' => 'The format of the phone number is either 10 or 11 digits.',
+        'nj_county.required' => 'Please select a New Jersey county it is a required field.',
+        'consent_agreement.required' => 'You must read and accept the Nomination License and Consent Agreement.'
+    ];
 
 
     public function nextStep()
@@ -21,7 +50,32 @@ class NominationsForm extends Component
         $this->step--;
     }
 
-    public function mount() {}
+    public function populateFields()
+    {
+
+
+        if (in_array($this->nominating_category, ['Organization', 'Adult Individual (18+)', 'Teen Individual (Ages 13-17)'])) {
+            $this->reset('nominee_name', 'nominee_email');
+        } else {
+            // Get the name and email values from the form fields
+            $name = $this->first_name . " " . $this->last_name;
+            $email = $this->email_address;
+
+            // Populate the fields in the Livewire component
+            $this->nominee_name = $name;
+            $this->nominee_email = $email;
+        }
+    }
+
+    public function submit()
+    {
+        $this->validate();
+    }
+
+    public function mount()
+    {
+        $this->populateFields();
+    }
 
     public function render()
     {

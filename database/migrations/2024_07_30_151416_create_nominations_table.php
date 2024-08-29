@@ -15,14 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('email');
+            $table->string('email_address');
             $table->string('phone_number');
-            $table->string('nominating_option');
-            $table->string('nominee_organization_name')->nullable();
-            $table->string('nominee_first_name')->nullable();
-            $table->string('nominee_last_name')->nullable();
-            $table->string('nominee_email')->nullable();
-            $table->string('category');
+            $table->string('nominating_category');
+            $table->string('nominee_name');
+            $table->string('nominee_email');
             $table->string('county');
             $table->text('story');
             $table->string('uploaded_video')->nullable();
