@@ -14,18 +14,23 @@ class NominationMailable extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
+    public $first_name;
+    public $last_name;
+    public $nominee_name;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($data)
+    public function __construct($first_name, $last_name, $nominee_name)
     {
-        $this->data = $data;
+        $this->first_name = $first_name;
+        $this->last_name = $last_name;
+        $this->nominee_name = $nominee_name;
     }
 
     public function build()
     {
-        return $this->view('emails.nominated_by_nominator')->with('data', $this->data);
+        return $this->view('emails.nominated_by_nominator')->with('first_name', $this->first_name)->with('last_name', $this->last_name)->with('nominee_name', $this->nominee_name);
     }
 
     /**

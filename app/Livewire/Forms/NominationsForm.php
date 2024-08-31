@@ -81,10 +81,14 @@ class NominationsForm extends Component
             ])
         );
 
+        $nominee_name = $request->input('nominee_name');
+        $first_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+
         // Create a new Mailable instance
-        $mailable = new ThankYouMailable($request->all());
-        $mailabe2 = new NominationMailable($request->all());
-        $mailable3 = new ThankYouSelfMailable($request->all());
+        $mailable = new ThankYouMailable($first_name, $last_name, $nominee_name);
+        $mailabe2 = new NominationMailable($first_name, $last_name, $nominee_name);
+        $mailable3 = new ThankYouSelfMailable($first_name, $last_name);
 
         if ($this->email_address == $this->nominee_email) {
             Mail::to($this->email_address)->send($mailable3);
