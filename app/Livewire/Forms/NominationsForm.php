@@ -2,7 +2,13 @@
 
 namespace App\Livewire\Forms;
 
+use App\Mail\NominationMailable;
+use App\Mail\ThankYouMailable;
+use App\Mail\ThankYouSelfMailable;
 use Livewire\Component;
+use App\Models\Nomination;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class NominationsForm extends Component
 {
@@ -15,7 +21,8 @@ class NominationsForm extends Component
     public $nominee_email;
     public $nj_county;
     public $story_essay;
-    public $consent_agreement;
+    public $uploaded_video;
+    public $disclaimer_agreed;
 
     public $step = 1;
     public $nomination_category = "";
@@ -29,31 +36,18 @@ class NominationsForm extends Component
         'nominee_name' => 'required',
         'nominee_email' => 'required|email',
         'nj_county' => 'required',
-        'story_essay' => 'required|max:500',
-        'consent_agreement' => 'required'
+        'story_essay' => 'required',
+        'disclaimer_agreed' => 'required'
     ];
 
     protected $messages = [
         'phone_number.regex' => 'The format of the phone number is either 10 or 11 digits.',
         'nj_county.required' => 'Please select a New Jersey county it is a required field.',
-        'consent_agreement.required' => 'You must read and accept the Nomination License and Consent Agreement.'
+        'disclaimer_agreed.required' => 'You must read and accept the Nomination License and Consent Agreement.'
     ];
-
-
-    public function nextStep()
-    {
-        $this->step++;
-    }
-
-    public function previousStep()
-    {
-        $this->step--;
-    }
 
     public function populateFields()
     {
-
-
         if (in_array($this->nominating_category, ['Organization', 'Adult Individual (18+)', 'Teen Individual (Ages 13-17)'])) {
             $this->reset('nominee_name', 'nominee_email');
         } else {
@@ -67,9 +61,39 @@ class NominationsForm extends Component
         }
     }
 
-    public function submit()
+    public function submit(Request $request)
     {
         $this->validate();
+
+        Nomination::create(
+            $this->only([
+                'first_name',
+                'last_name',
+                'email_address',
+                'phone_number',
+                'nominating_category',
+                'nominee_name',
+                'nominee_email',
+                'nj_county',
+                'story_essay',
+                'uploaded_video',
+                'disclaimer_agreed'
+            ])
+        );
+
+        // Create a new Mailable instance
+        $mailable = new ThankYouMailable($request->all());
+        $mailabe2 = new NominationMailable($request->all());
+        $mailable3 = new ThankYouSelfMailable($request->all());
+
+        if ($this->email_address == $this->nominee_email) {
+            Mail::to($this->email_address)->send($mailable3);
+        } else {
+            Mail::to($this->email_address)->send($mailable);
+            Mail::to($this->nominee_email)->send($mailabe2);
+        }
+
+        return redirect('/');
     }
 
     public function mount()

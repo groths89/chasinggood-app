@@ -1,25 +1,23 @@
-<div x-data="{ completedFields: 0, totalFields: 5 }">
-<form class="space-y-8" wire:submit.prevent="submit">
+<div x-data="{ progress: 0 }">
+<form class="space-y-8" wire:submit.prevent="submit" enctype="multipart/form-data">
+    @csrf
     <div>
-        <div class="h-2 mb-2 bg-gray-200 rounded-full progress">
-            <div class="h-full bg-blue-500 rounded-full progress-bar" :style="{ width: completedFields / totalFields * 100 + '%' }"></div>          
-        </div>
         <div class="container mx-auto">
             <div class="section">
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Basic Details</h2>
                     <div class="flex flex-row mb-3">
-                        <x-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('first_name') @enderror
-                        <x-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('last_name') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-input wire:model="email_address" placeholder="Email Address" type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="email_address" placeholder="Email Address" type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('email_address') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-phone wire:model="phone_number" placeholder="Phone Number" type="phone" id="phoneNumber" :mask="['(###) ###-####', '+# ### ###-####']" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-phone wire:model="phone_number" placeholder="Phone Number" type="phone" id="phoneNumber" :mask="['(###) ###-####', '+# ### ###-####']" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('phone_number') @enderror
                     </div>
                 </div>
@@ -28,23 +26,23 @@
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Nominations Details</h2>
                     <div>
-                        <x-card title="Who are you nominating?">
+                        <x-wui-card title="Who are you nominating?">
                             <div class="space-y-2" x-data="{ nominationCategory: '' }">
-                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="self" label="Self: Are you nominating yourself?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Self" />
-                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="organization" label="Organization: Are you nominating an organization?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Organization" />
-                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="adult_individual" label="Adult Individual (18+): Are you nominating an indivudual that is 18 or older?" name="nominationRadio" x-model="nominationCategory"wire:click="populateFields" value="Adult Individual (18+)" />
-                                <x-radio wire:model="nominating_category" @class(['m-4']) lg id="teen_individual" label="Teen Individual (ages 13-17): Are you nominating an individual that is a teenager from ages 13 to 17?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Teen Individual (Ages 13-17)" />
+                                <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="self" label="Self: Are you nominating yourself?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Self" />
+                                <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="organization" label="Organization: Are you nominating an organization?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Organization" />
+                                <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="adult_individual" label="Adult Individual (18+): Are you nominating an indivudual that is 18 or older?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Adult Individual (18+)" />
+                                <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="teen_individual" label="Teen Individual (ages 13-17): Are you nominating an individual that is a teenager from ages 13 to 17?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Teen Individual (Ages 13-17)" />
                                 @error('nominating_category') @enderror
                                 <div x-show="nominationCategory === 'Organization' || nominationCategory === 'Adult Individual (18+)' || nominationCategory === 'Teen Individual (Ages 13-17)'">
-                                    <x-input wire:model="nominee_name" placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                    <x-input wire:model="nominee_email" placeholder="Nominee Email Address" type="text" id="nomineeEmail" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />                               
+                                    <x-wui-input wire:model="nominee_name" placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <x-wui-input wire:model="nominee_email" placeholder="Nominee Email Address" type="text" id="nomineeEmail" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />                               
                                 </div>
                                 @error('nominee_name') @enderror
                                 @error('nominee_email') @enderror                                                       
                             </div>
-                        </x-card>
+                        </x-wui-card>
 
-                        <x-select
+                        <x-wui-select
                         wire:model="nj_county"
                         class="w-full px-4 py-4 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         label="Search for a NJ County"
@@ -97,7 +95,7 @@
                     <div class="m-4">
                         <div class="container p-4 mx-auto">
                             <div class="editor-container">
-                                <textarea wire:model="story_essay" id="editor" class="w-full h-64 p-2 border rounded"></textarea>
+                                <textarea wire:model="story_essay" max_words="500" id="editor" class="w-full h-64 p-2 border rounded"></textarea>
                                 @error('story_essay') @enderror
                             </div>
 {{--                             <div class="flex justify-center mt-4 space-x-2 toolbar">
@@ -111,9 +109,9 @@
                         <p class="text-xs">(please limit to 500 words or less)</p>
                         </div>
                     </div>
-                    <div class="items-center m-4">
+                    {{-- <div class="items-center m-4">
                         <label for="fileUpload" class="mr-2 text-gray-700">Video Upload:</label>
-                        <input id="fileUpload" class="hidden" type="file" accept="video/*">
+                        <input wire:model="uploaded_video" id="fileUpload" type="file" accept="video/*">
                         <div class="fileUpload min-w-[150px] max-w-[500px] inline-block cursor-pointer">
                           <button type="button" class="p-2 bg-gray-200 rounded-full upload-btn hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
@@ -122,8 +120,14 @@
                             </svg>                                                          
                           </button>
                         </div>
+                        @if ($uploaded_video)
+                            <video controls>
+                                <source src="{{ $uploaded_video }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>                            
+                        @endif
                         <div class="ml-4 text-sm italic text-red-500">*max 2 minute video</div>
-                      </div>
+                      </div> --}}
                 </div>
             </div>
             <div class="section">
@@ -160,8 +164,8 @@
                                 </p>
                                 <div class="btn_container">
                                     <div class="flex items-center mb-4">
-                                        <input wire:model="consent_agreement" type="checkbox" value="theChkAcceptTerms" id="disclaimer" [checked]="theChkAcceptTerms" /><span class="ml-2 text-gray-600">I Agree to the License and Consent Disclaimer of ChasingGood</span>                              
-                                        @error('consent_agreement') @enderror
+                                        <input wire:model="disclaimer_agreed" type="checkbox" value="theChkAcceptTerms" id="disclaimer" [checked]="theChkAcceptTerms" /><span class="ml-2 text-gray-600">I Agree to the License and Consent Disclaimer of ChasingGood</span>                              
+                                        @error('disclaimer_agreed') @enderror
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +187,30 @@
             <div class="flex flex-row justify-between my-3"> 
                 <button class="float-right px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="button" wire:click="submit">Submit</button>    
             </div>
-        </div>    
+            @if (session('status'))
+                <x-wui-alert title="Successsfully Submitted!" positive type="success" wire:loading.remove wire:target="submitGoodDeed">
+                    Good deed submitted successfully!
+                </x-wui-alert>           
+            @endif    
+        </div>
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('progressData', () => ({
+                    progress: 0,
+                    formActive: false,
+        
+                    updateProgress() {
+                        // Calculate progress based on form completion
+                        this.progress = (this.$refs.form.elements.length / this.$refs.form.elements.filter(el => el.value !== '').length) * 100;
+                    },
+        
+                    submitForm() {
+                        // Handle form submission
+                        this.formActive = false;
+                    }
+                }));
+            });
+        </script>    
     </div>
     <div>
            

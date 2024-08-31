@@ -17,8 +17,8 @@ class Nomination extends Model
         'nominating_category',
         'nominee_name',
         'nominee_email',
-        'county',
-        'story',
+        'nj_county',
+        'story_essay',
         'uploaded_video',
         'disclaimer_agreed',
     ];

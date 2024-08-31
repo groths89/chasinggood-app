@@ -1,13 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\VerifyEmailController;
-use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
-
     Volt::route('login', 'pages.auth.login')
         ->name('login');
 
@@ -28,4 +25,14 @@ Route::middleware('auth')->group(function () {
 
     Volt::route('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
+});
+
+Route::middleware(['auth', 'hasrole:super_admin'])->group(function () {});
+
+Route::middleware(['auth', 'hasrole:administrator'])->group(function () {
+    // Routes accessible only to administrators
+});
+
+Route::middleware(['auth', 'hasrole:volunteer'])->group(function () {
+    // Routes accessible only to volunteers
 });

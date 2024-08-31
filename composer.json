@@ -13,6 +13,10 @@
         "laravel/vapor-core": "^2.37",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
+        "richan-fongdasen/turso-laravel": "^0.7.0",
+        "spatie/laravel-permission": "^6.9",
+        "symfony/http-client": "^7.1",
+        "symfony/postmark-mailer": "^7.1",
         "wireui/wireui": "^2.0"
     },
     "require-dev": {

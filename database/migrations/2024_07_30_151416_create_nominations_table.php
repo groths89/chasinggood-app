@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('nominating_category');
             $table->string('nominee_name');
             $table->string('nominee_email');
-            $table->string('county');
-            $table->text('story');
+            $table->string('nj_county');
+            $table->text('story_essay');
             $table->string('uploaded_video')->nullable();
             $table->boolean('disclaimer_agreed');
             $table->timestamps();
