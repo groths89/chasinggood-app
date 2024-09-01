@@ -184,14 +184,15 @@
                 </ul>
             </div>
             @endif
+            @if(session()->has('success'))
+                <x-wui-alert title="Successsfully Submitted!" positive type="success" wire:loading.remove wire:target="submitGoodDeed">
+                    {{ session()->get('success') }}
+                </x-wui-alert>
+            @endif             
             <div class="flex flex-row justify-between my-3"> 
                 <button class="float-right px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="button" wire:click="submit">Submit</button>    
             </div>
-            @if(session()->has('message'))
-                <x-wui-alert title="Successsfully Submitted!" positive type="success" wire:loading.remove wire:target="submitGoodDeed">
-                    {{ session()->get('message') }}
-                </x-wui-alert>
-            @endif  
+
         </div>
         <script>
             document.addEventListener('alpine:init', () => {
