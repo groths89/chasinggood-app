@@ -7,17 +7,17 @@
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Basic Details</h2>
                     <div class="flex flex-row mb-3">
-                        <x-wui-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" name="first_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="first_name" placeholder="First Name" label="First Name *[Required]" type="text" id="firstName" name="first_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('first_name') @enderror
-                        <x-wui-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" name="last_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="last_name" placeholder="Last Name" label="Last Name *[Required]"  type="text" id="lastName" name="last_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('last_name') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-wui-input wire:model="email_address" placeholder="Email Address" type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="email_address" placeholder="Email Address" label="Email Address *[Required]"  type="email" id="emailAddress" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('email_address') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
-                        <x-wui-phone wire:model="phone_number" placeholder="Phone Number" type="phone" id="phoneNumber" :mask="['(###) ###-####', '+# ### ###-####']" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-phone wire:model="phone_number" placeholder="Phone Number" label="Phone Number *[Required]"  type="phone" id="phoneNumber" :mask="['(###) ###-####', '+# ### ###-####']" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('phone_number') @enderror
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Nominations Details</h2>
                     <div>
-                        <x-wui-card title="Who are you nominating?">
+                        <x-wui-card title="Who are you nominating? *[Required]">
                             <div class="space-y-2" x-data="{ nominationCategory: '' }">
                                 <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="self" label="Self: Are you nominating yourself?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Self" />
                                 <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="organization" label="Organization: Are you nominating an organization?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Organization" />
@@ -45,7 +45,7 @@
                         <x-wui-select
                         wire:model="nj_county"
                         class="w-full px-4 py-4 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        label="Search for a NJ County"
+                        label="Search for a NJ County *[Required]"
                         placeholder="Select NJ County"
                         :options="[
                             'Atlantic County',
@@ -138,7 +138,7 @@
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414   
                        1.414L11.414 12l2.828 2.828a1 1 0 01-1.414 1.414L10 13.414l-3.293 3.293a1 1 0 01-1.414-1.414L8.586 12l-2.828-2.828a1 1 0 010-1.414z" clip-rule="evenodd" />
                           </svg>
-                          Nomination License and Consent Agreement
+                          Nomination License and Consent Agreement [This is required, click here to view and accept]
                         </summary>
                         <div class="p-2 text-gray-700">
                             <div class="p-4 nlca_container">
