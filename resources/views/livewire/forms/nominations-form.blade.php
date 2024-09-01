@@ -7,9 +7,9 @@
                 <div class="p-4 border rounded">
                     <h2 class="text-lg font-bold">Basic Details</h2>
                     <div class="flex flex-row mb-3">
-                        <x-wui-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="first_name" placeholder="First Name" type="text" id="firstName" name="first_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('first_name') @enderror
-                        <x-wui-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <x-wui-input wire:model="last_name" placeholder="Last Name" type="text" id="lastName" name="last_name" class="block w-full px-4 py-4 mx-1 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         @error('last_name') @enderror
                     </div>
                     <div class="flex flex-row mb-3">
@@ -34,7 +34,7 @@
                                 <x-wui-radio wire:model="nominating_category" @class(['m-4']) lg id="teen_individual" label="Teen Individual (ages 13-17): Are you nominating an individual that is a teenager from ages 13 to 17?" name="nominationRadio" x-model="nominationCategory" wire:click="populateFields" value="Teen Individual (Ages 13-17)" />
                                 @error('nominating_category') @enderror
                                 <div x-show="nominationCategory === 'Organization' || nominationCategory === 'Adult Individual (18+)' || nominationCategory === 'Teen Individual (Ages 13-17)'">
-                                    <x-wui-input wire:model="nominee_name" placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <x-wui-input wire:model="nominee_name" placeholder="Nominee Name/Organization Name" type="text" id="nomineeName" name="nominee_name" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                     <x-wui-input wire:model="nominee_email" placeholder="Nominee Email Address" type="text" id="nomineeEmail" class="block w-full px-4 py-4 mt-1 border-gray-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />                               
                                 </div>
                                 @error('nominee_name') @enderror
@@ -187,11 +187,11 @@
             <div class="flex flex-row justify-between my-3"> 
                 <button class="float-right px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="button" wire:click="submit">Submit</button>    
             </div>
-            @if (session('status'))
+            @if(session()->has('message'))
                 <x-wui-alert title="Successsfully Submitted!" positive type="success" wire:loading.remove wire:target="submitGoodDeed">
-                    Good deed submitted successfully!
-                </x-wui-alert>           
-            @endif    
+                    {{ session()->get('message') }}
+                </x-wui-alert>
+            @endif  
         </div>
         <script>
             document.addEventListener('alpine:init', () => {

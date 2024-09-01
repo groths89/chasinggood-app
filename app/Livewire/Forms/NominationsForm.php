@@ -97,7 +97,7 @@ class NominationsForm extends Component
             Mail::to($this->nominee_email)->send($mailabe2);
         }
 
-        return redirect('/');
+        return redirect()->back()->with('message', 'Good deed submitted successfully!');
     }
 
     public function mount()
