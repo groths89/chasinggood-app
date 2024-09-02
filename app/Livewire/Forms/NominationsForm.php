@@ -65,6 +65,12 @@ class NominationsForm extends Component
     {
         $this->validate();
 
+        $data = [
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'nominee_name' => $this->nominee_name
+        ];
+
         Nomination::create(
             $this->only([
                 'first_name',
@@ -86,9 +92,9 @@ class NominationsForm extends Component
         $last_name = $request->input('last_name');
 
         // Create a new Mailable instance
-        $mailable = new ThankYouMailable($first_name, $last_name, $nominee_name);
-        $mailabe2 = new NominationMailable($first_name, $last_name, $nominee_name);
-        $mailable3 = new ThankYouSelfMailable($first_name, $last_name);
+        $mailable = new ThankYouMailable($data);
+        $mailabe2 = new NominationMailable($data);
+        $mailable3 = new ThankYouSelfMailable($data);
 
         if ($this->email_address == $this->nominee_email) {
             Mail::to($this->email_address)->send($mailable3);
@@ -97,8 +103,9 @@ class NominationsForm extends Component
             Mail::to($this->nominee_email)->send($mailabe2);
         }
 
-        session()->flash('success', 'Good deed submitted successfully!');
-        return redirect()->back();
+        session()->flash('message', 'Good deed submitted successfully!');
+
+        return back()->with('message', 'Good deed submitted successfully!');
     }
 
     public function mount()

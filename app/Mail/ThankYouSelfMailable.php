@@ -20,15 +20,14 @@ class ThankYouSelfMailable extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($first_name, $last_name)
+    public function __construct($data)
     {
-        $this->first_name = $first_name;
-        $this->last_name = $last_name;
+        $this->data = $data;
     }
 
     public function build()
     {
-        return $this->view('emails.thank_you_self_nominator')->with('first_name', $this->first_name)->with('last_name', $this->last_name);
+        return $this->view('emails.thank_you_self_nominator')->with($this->data, $this->data);
     }
 
     /**

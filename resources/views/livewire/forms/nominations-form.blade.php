@@ -1,5 +1,5 @@
 <div x-data="{ progress: 0 }">
-<form class="space-y-8" wire:submit.prevent="submit" enctype="multipart/form-data">
+<form class="space-y-8" enctype="multipart/form-data" method="POST">
     @csrf
     <div>
         <div class="container mx-auto">
@@ -184,9 +184,9 @@
                 </ul>
             </div>
             @endif
-            @if(session()->has('success'))
+            @if(session()->has('message'))
                 <x-wui-alert title="Successsfully Submitted!" positive type="success" wire:loading.remove wire:target="submitGoodDeed">
-                    {{ session()->get('success') }}
+                    {{ session()->get('message') }}
                 </x-wui-alert>
             @endif             
             <div class="flex flex-row justify-between my-3"> 
